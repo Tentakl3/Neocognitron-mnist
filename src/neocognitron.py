@@ -4,7 +4,7 @@ import message
 import cv2 as cv
 import numpy as np
 
-ALPHABET = '012'
+ALPHABET = '01234'
 STORAGE_PATH = 'data/storage/layer'
 
 class Neocognitron(object):
@@ -34,16 +34,21 @@ class Neocognitron(object):
 		self.data_dic[0][symbol] += 1
 		for layer in range(self.numLayers):
 			output = self.sLayers[layer].propagate(output, False)
+			self.save_and_unify_images(layer, output, symbol, self.data_dic[layer+1][symbol], True)
 			output = self.cLayers[layer].propagate(output)
 			#self.imgPlane(layer, output)
-			self.save_and_unify_images(layer, output, symbol, self.data_dic[layer+1][symbol])
+			self.save_and_unify_images(layer, output, symbol, self.data_dic[layer+1][symbol], False)
 			self.data_dic[layer+1][symbol] += 1
+
+			if layer == self.numLayers - 2:
+				for plane in range(output.numPlanes):
+					output.outputs[plane] = np.where(output.outputs[plane] != 0, output.outputs[plane] + 1, 0)
 
 		result = output.getPointsOnPlanes(0, 0)
 		return result
 
 	def imgPlane(self, out, symbol, symbolIndex):
-		filename = f'{STORAGE_PATH}{0}/{symbol}/unified{symbolIndex}.png'
+		filename = f'{STORAGE_PATH}{0}/{symbol}/img{symbolIndex}.png'
 		array = out.outputs[0]
 		# Convertir array a NumPy array
 		array = np.array(array, dtype=np.float32)
@@ -52,31 +57,38 @@ class Neocognitron(object):
 		# Guardar la imagen binaria
 		cv.imwrite(filename, binary_image)
 	
-	def save_and_unify_images(self, layer, out, symbol, symbolIndex):
+	def save_and_unify_images(self, layer, out, symbol, symbolIndex, switch):
 		images = []
 		for plane in range(out.numPlanes):
 			filename = f'{STORAGE_PATH}{layer+1}/plane{plane}.png'
 			array = out.outputs[plane]
-			# Convertir array a NumPy array
+			# Convert array to NumPy array
 			array = np.array(array, dtype=np.float32)
-			# Crear imagen binaria: valores diferentes de cero se pintan de negro
+			# Create binary image: non-zero values are black, zero values are white
 			binary_image = np.where(array != 0, 0, 255).astype(np.uint8)
-			# Guardar la imagen binaria
-			#cv.imwrite(filename, binary_image)
+			# Save the binary image (optional, commented out)
 			images.append(binary_image)
 		
-		# Unificar las imágenes en una sola imagen cuadrada
+		# Create a rectangular layout for the images
 		num_images = len(images)
-		grid_size = int(np.ceil(np.sqrt(num_images)))
 		image_height, image_width = images[0].shape
-		unified_image = np.full((grid_size * image_height, grid_size * image_width), 255, dtype=np.uint8)
+		# Calculate the number of rows and columns for the rectangle
+		num_columns = int(np.sqrt(num_images))  # Use square root for approximate width
+		num_rows = int(num_images / num_columns)  # Calculate rows based on total images
+		
+		# Create a blank unified image with the calculated dimensions
+		unified_image = np.full((num_rows * image_height, num_columns * image_width), 255, dtype=np.uint8)
 		
 		for idx, img in enumerate(images):
-			row = idx // grid_size
-			col = idx % grid_size
+			row = idx // num_columns
+			col = idx % num_columns
 			unified_image[row * image_height:(row + 1) * image_height, col * image_width:(col + 1) * image_width] = img
 		
-		unified_filename = f'{STORAGE_PATH}{layer+1}/{symbol}/unified{symbolIndex}.png'
+		# Save the unified image
+		if switch:
+			unified_filename = f'{STORAGE_PATH}{layer+1}/{symbol}/img{symbolIndex}-S.png'
+		else:
+			unified_filename = f'{STORAGE_PATH}{layer+1}/{symbol}/img{symbolIndex}-C.png'
 		cv.imwrite(unified_filename, unified_image)
 
 		if layer == self.numLayers - 1:
@@ -84,10 +96,10 @@ class Neocognitron(object):
 			max_idx = np.unravel_index(np.argmax(out.outputs, axis=None), out.outputs.shape)
 			max_plane, max_x, max_y = max_idx
 
-			# Crear una imagen unificada con solo la celda máxima en negro
-			final_unified_image = np.full((grid_size * image_height, grid_size * image_width), 255, dtype=np.uint8)
-			row = max_plane // grid_size
-			col = max_plane % grid_size
+			 # Create a unified image with only the max cell in black
+			final_unified_image = np.full((num_rows * image_height, num_columns * image_width), 255, dtype=np.uint8)
+			row = max_plane // num_columns
+			col = max_plane % num_columns
 			final_unified_image[row * image_height + max_x, col * image_width + max_y] = 0
 
 			max_image_filename = f'{STORAGE_PATH}{layer+1}/{symbol}/max_value{symbolIndex}.png'

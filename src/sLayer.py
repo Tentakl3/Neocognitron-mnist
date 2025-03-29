@@ -44,7 +44,7 @@ class SLayer:
             for ck in range(prev):
                 for w in range(pow(self.windowSize, 2)):
                     #self.a[k][ck][w] = 0.3 + w *  abs((ck / prev) - (k / self.windowSize))
-                    self.a[k][ck][w] = random.random() * 0.4
+                    self.a[k][ck][w] = random.random() * .4
                     
     #initialize "b" parameter at zero
     def initB(self):
@@ -66,7 +66,7 @@ class SLayer:
                     output.setOneOutput(plane, x, y, val)
         if train:
             self.adjustWeights(inputs, output, vOutput)
-            #output = self.propagate(inputs, False)
+            output = self.propagate(inputs, False)
         return output
     
     #adjust the value of the "a" and "b" parameters for each epoch

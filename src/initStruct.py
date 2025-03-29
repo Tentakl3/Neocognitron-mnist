@@ -22,10 +22,10 @@ class InitStruct:
         
         self.PLANES_PER_LAYER = [24, 24, 24]
 
-        self.S_WINDOW_SIZE = [5, 5, 2]
-        self.C_WINDOW_SIZE = [5, 5, 2]
+        self.S_WINDOW_SIZE = [3, 3, 2]
+        self.C_WINDOW_SIZE = [3, 3, 2]
 
-        self.S_COLUMN_SIZE = [5, 5, 2]
+        self.S_COLUMN_SIZE = [3, 3, 2]
 
         # Q -> speed of reinforcement
         self.Q = [1.0, 16.0, 16.0]
@@ -34,10 +34,11 @@ class InitStruct:
         self.R = [4.0, 1.5, 1.5]
 
         self.gamma = [.11, .42, .06]
-        self.delta = [.49, .60, .90]
-        self.delta_bar = [.39, .68, .90]
+        self.delta = [.49, .87, .52]
+        #self.delta_bar = [.39, .68, .39]
+        self.delta_bar = [.59, .89, .99]
 
-        self.A_RANGE = [0.55, 0.45, 0.35]
+        self.A_RANGE = [0.4, 0.4, 0.4]
 
         self.generateC()
         self.generateD()

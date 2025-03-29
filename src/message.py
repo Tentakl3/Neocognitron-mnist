@@ -21,8 +21,12 @@ class Message(object):
 
     def getOneWindow(self, plane, x, y, windowSize):
         output = np.zeros(pow(windowSize, 2))
-        startX = x - windowSize//2
-        startY = y - windowSize//2
+        if windowSize % 2 == 0:
+            offset = windowSize//2
+        else:
+            offset = (windowSize-1)//2
+        startX = x - offset
+        startY = y - offset
         count = 0
         for i in range(windowSize):
             for j in range(windowSize):
@@ -39,7 +43,10 @@ class Message(object):
 
     def getSquareWindow(self, plane, x, y, windowSize):
         output = np.zeros((windowSize, windowSize))
-        offset = (windowSize-1)//2
+        if windowSize % 2 == 0:
+            offset = windowSize//2
+        else:
+            offset = (windowSize-1)//2
         #offset = windowSize//2
         for i in range(windowSize):
             for j in range(windowSize):
@@ -62,7 +69,10 @@ class Message(object):
                     if sColumn[plane][x][y] > maxVal:
                         maxL = location.Location(plane, x, y)
                         maxVal = sColumn[plane][x][y]
-        offset = (windowSize - windowSize%2)//2
+        if windowSize % 2 == 0:
+            offset = windowSize//2
+        else:
+            offset = (windowSize - windowSize%2)//2
         #offset = windowSize // 2
         if maxL is not None:
             x, y = maxL.getPoint()
@@ -91,7 +101,10 @@ class Message(object):
 
     def getRepresentatives(self, columnSize):
         points = []
-        offset = (columnSize - 1) // 2
+        if columnSize % 2 == 0:
+            offset = columnSize // 2
+        else:
+            offset = (columnSize - 1) // 2
         #offset = columnSize // 2
         if columnSize == self.size:
             sColumn = self.getSquareWindows(self.size//2, self.size//2, columnSize)

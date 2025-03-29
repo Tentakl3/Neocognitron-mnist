@@ -30,7 +30,7 @@ i = 0
 l = shuffle(arr_img, arr_labels)
 while count < cap:
     image, label = l[i]
-    if label == 0:
+    if label == 4:
         index = numzeros(count)
         image_filename = f'validate/{label}/' + str(label) + '-' + '0'*index + str(count + 1) + '.png'
         image = abs(255 - image)
