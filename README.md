@@ -1,4 +1,4 @@
-*Neocognitron Implementation in Python
+#Neocognitron Implementation in Python
 
 **Overview
 
