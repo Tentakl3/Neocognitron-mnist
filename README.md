@@ -14,13 +14,13 @@ This repository provides an implementation of the Neocognitron, a hierarchical n
 
 ✅ Allows saving and loading the trained network using Python's pickle module.
 
-📥 ### Installation
+## 📥 Installation
 
 Ensure you have Python 3.8+ installed. Install the required dependencies using:
 
 pip install -r requirements.txt
 
-🚀 ## Usage
+## 🚀 Usage
 
 ▶️ Running the Neocognitron
 
@@ -28,11 +28,11 @@ To train and test the Neocognitron, simply run:
 
 python run.py
 
-⚙️ ## Modifying Network Parameters
+## ⚙️ Modifying Network Parameters
 
 To modify the network structure and parameters, edit the initStructure.py file before running the program.
 
-📦 ## Dependencies
+## 📦 Dependencies
 
 📌 numpy
 
@@ -40,11 +40,11 @@ To modify the network structure and parameters, edit the initStructure.py file b
 
 📌 pickle (built-in Python module)
 
-📚 ## References
+## 📚 References
 
 📖 Fukushima, K. "Neocognitron: A Self-organizing Neural Network Model for a Mechanism of Pattern Recognition Unaffected by Shift in Position." Biological Cybernetics, 1980.
 
-📜 ## License
+## 📜 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
