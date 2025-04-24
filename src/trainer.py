@@ -2,14 +2,15 @@ import random
 import cv2 as cv
 import neocognitron
 import initStruct
+import numpy as np
 import os
 
 IMG_SIZE = 16
 FILES_PER_CLASS = 10
-TRAIN_PER_CLASS = 20
+TRAIN_PER_CLASS = 30
 ALPHABET = '01234'
 DATA_DIR = 'data/validate-mnist/'
-TRAIN_DATA_DIR = 'data/training-mnist/'
+TRAIN_DATA_DIR = 'data/train-mnist/'
 ON = 0
 OFF = 255
 
@@ -35,8 +36,8 @@ def getTrainFile():
 				if counter < TRAIN_PER_CLASS:
 					if not content[0] == '.':
 						img = cv.imread(path + content, flags=cv.IMREAD_GRAYSCALE)
-						_, img = cv.threshold(img, 225, 1, cv.THRESH_BINARY_INV)
-					output.append(img)
+						binary_img = np.where(img > 25, 1, 0).astype(np.uint8)
+					output.append(binary_img)
 					counter += 1
 		counter = 0
 	random.shuffle(output)
@@ -58,8 +59,8 @@ def getInputs(trainFiles):
 			numZeros = numzeros(fileNum)
 			fileName = letter + '-' + '0'*numZeros + str(fileNum + 1) + '.png'						
 			img = cv.imread(DATA_DIR + letter+ '/' + fileName, flags=cv.IMREAD_GRAYSCALE)
-			_, img = cv.threshold(img, 225, 1, cv.THRESH_BINARY_INV)
-			inputs.append((img, letter))
+			binary_img = np.where(img > 25, 1, 0).astype(np.uint8)
+			inputs.append((binary_img, letter))
 	random.shuffle(inputs)
 	return inputs
 

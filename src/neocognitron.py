@@ -36,13 +36,8 @@ class Neocognitron(object):
 			output = self.sLayers[layer].propagate(output, False)
 			self.save_and_unify_images(layer, output, symbol, self.data_dic[layer+1][symbol], True)
 			output = self.cLayers[layer].propagate(output)
-			#self.imgPlane(layer, output)
 			self.save_and_unify_images(layer, output, symbol, self.data_dic[layer+1][symbol], False)
 			self.data_dic[layer+1][symbol] += 1
-
-			if layer == self.numLayers - 2:
-				for plane in range(output.numPlanes):
-					output.outputs[plane] = np.where(output.outputs[plane] != 0, output.outputs[plane] + 1, 0)
 
 		result = output.getPointsOnPlanes(0, 0)
 		return result
@@ -53,19 +48,18 @@ class Neocognitron(object):
 		# Convertir array a NumPy array
 		array = np.array(array, dtype=np.float32)
 		# Crear imagen binaria: valores diferentes de cero se pintan de negro
-		binary_image = np.where(array != 0, 0, 255).astype(np.uint8)
+		binary_image = np.where(array > 0, 0, 255).astype(np.uint8)
 		# Guardar la imagen binaria
 		cv.imwrite(filename, binary_image)
 	
 	def save_and_unify_images(self, layer, out, symbol, symbolIndex, switch):
 		images = []
 		for plane in range(out.numPlanes):
-			filename = f'{STORAGE_PATH}{layer+1}/plane{plane}.png'
 			array = out.outputs[plane]
 			# Convert array to NumPy array
 			array = np.array(array, dtype=np.float32)
 			# Create binary image: non-zero values are black, zero values are white
-			binary_image = np.where(array != 0, 0, 255).astype(np.uint8)
+			binary_image = np.where(array > 0.3, 0, 255).astype(np.uint8)
 			# Save the binary image (optional, commented out)
 			images.append(binary_image)
 		
@@ -112,4 +106,3 @@ class Neocognitron(object):
 		for layer in range(self.numLayers):
 			output = self.sLayers[layer].propagate(output, True)
 			output = self.cLayers[layer].propagate(output)
-			#self.imgPlane(layer, output)

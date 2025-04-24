@@ -32,8 +32,7 @@ while count < cap:
     image, label = l[i]
     if label == 4:
         index = numzeros(count)
-        image_filename = f'validate/{label}/' + str(label) + '-' + '0'*index + str(count + 1) + '.png'
-        image = abs(255 - image)
+        image_filename = f'train/{label}/' + str(label) + '-' + '0'*index + str(count + 1) + '.png'
         resized_image = cv.resize(image, (16, 16))
         cv.imwrite(image_filename, resized_image)
         count += 1

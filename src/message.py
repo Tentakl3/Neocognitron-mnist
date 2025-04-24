@@ -25,14 +25,12 @@ class Message(object):
             offset = windowSize//2
         else:
             offset = (windowSize-1)//2
-        startX = x - offset
-        startY = y - offset
+        #offset = windowSize//2
         count = 0
         for i in range(windowSize):
             for j in range(windowSize):
-                if startX + i >= 0 and startY + j >= 0 and startX + i < self.size and startY + j < self.size:
-                    output[count] = self.outputs[plane][startX + i][startY + j]
-                count += 1
+                if x - offset + i >= 0 and y - offset + j >= 0 and x - offset + i < self.size and y - offset + j < self.size:
+                    output[count] = self.outputs[plane][x - offset + i][y - offset + j]
         return output
     
     def getSquareWindows(self, x, y, windowSize):
@@ -63,16 +61,16 @@ class Message(object):
     def getLocationOfMax(self, sColumn, center, windowSize):
         maxL = None
         maxVal = 0.0
-        for plane in range(sColumn.shape[0]):
-            for x in range(sColumn.shape[1]):
-                for y in range(sColumn.shape[2]):
+        for plane in range(self.numPlanes):
+            for x in range(windowSize):
+                for y in range(windowSize):
                     if sColumn[plane][x][y] > maxVal:
                         maxL = location.Location(plane, x, y)
                         maxVal = sColumn[plane][x][y]
         if windowSize % 2 == 0:
             offset = windowSize//2
         else:
-            offset = (windowSize - windowSize%2)//2
+            offset = (windowSize - 1)//2
         #offset = windowSize // 2
         if maxL is not None:
             x, y = maxL.getPoint()
@@ -106,20 +104,16 @@ class Message(object):
         else:
             offset = (columnSize - 1) // 2
         #offset = columnSize // 2
-        if columnSize == self.size:
-            sColumn = self.getSquareWindows(self.size//2, self.size//2, columnSize)
-            temp = self.getLocationOfMax(sColumn, (self.size//2, self.size//2), columnSize)
-            points.append(temp)
-        else:
-            for x in range(self.size-offset):
-                for y in range(self.size-offset):
-                    sColumn = self.getSquareWindows(x, y, columnSize)
-                    temp = self.getLocationOfMax(sColumn, (x, y), columnSize)
-                    points.append(temp)
+        for x in range(self.size):
+            for y in range(self.size):
+                sColumn = self.getSquareWindows(x, y, columnSize)
+                temp = self.getLocationOfMax(sColumn, (x, y), columnSize)
+                points.append(temp)
 
         reps = []
         for plane in range(self.numPlanes):
             reps.append(self.getMaxPerPlane(plane, points))
+        #print(reps)
         return reps
 
 

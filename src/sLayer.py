@@ -1,9 +1,8 @@
 import numpy as np
 import message
-import random
-import math
 import vsCell
 import sCell
+import random
 
 class SLayer:
     def __init__(self, layer, initStruct):
@@ -39,12 +38,15 @@ class SLayer:
 
     #initialize "a" parameter values to small values [0,1]
     def initA(self, prev):
+        np.random.seed(42)
         self.a = np.zeros((self.numPlanes, prev, pow(self.windowSize, 2)))
         for k in range(self.numPlanes):
             for ck in range(prev):
                 for w in range(pow(self.windowSize, 2)):
-                    #self.a[k][ck][w] = 0.3 + w *  abs((ck / prev) - (k / self.windowSize))
-                    self.a[k][ck][w] = random.random() * .4
+                    dist_factor = abs((ck / prev) - (k / self.numPlanes))
+                    pos_factor = np.sin(w) * np.cos(w+1)  # más variabilidad
+                    rand_factor = np.random.uniform(0, 1.2)       # aleatoriedad suave
+                    self.a[k][ck][w] = rand_factor
                     
     #initialize "b" parameter at zero
     def initB(self):

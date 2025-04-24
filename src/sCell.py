@@ -11,7 +11,7 @@ class SCell(object):
 		output = 0.0
         #"a" parameter usage
 		for cell in range(inputs.shape[0]):
-			output += np.dot(a[0], inputs[cell])
+			output += np.dot(a[cell], inputs[cell])
         #"b" parameter usage
 		denom = 1 + (2*self.r/(self.r+1)) * b * vInput
 			
