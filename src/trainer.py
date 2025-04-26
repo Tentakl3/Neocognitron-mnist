@@ -7,7 +7,7 @@ import os
 
 IMG_SIZE = 16
 FILES_PER_CLASS = 10
-TRAIN_PER_CLASS = 30
+TRAIN_PER_CLASS = 25
 ALPHABET = '01234'
 DATA_DIR = 'data/validate-mnist/'
 TRAIN_DATA_DIR = 'data/train-mnist/'

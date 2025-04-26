@@ -17,15 +17,15 @@ class InitStruct:
 ##########################################################################
 #                              VARIABLE                                  #
 ##########################################################################
-        self.S_LAYER_SIZES = [16, 8, 4]
+        self.S_LAYER_SIZES = [16, 8, 2]
         self.C_LAYER_SIZES = [10, 6, 1]
         
         self.PLANES_PER_LAYER = [24, 24, 24]
 
-        self.S_WINDOW_SIZE = [3, 3, 2]
-        self.C_WINDOW_SIZE = [3, 3, 2]
+        self.S_WINDOW_SIZE = [3, 3, 3]
+        self.C_WINDOW_SIZE = [3, 3, 3]
 
-        self.S_COLUMN_SIZE = [3, 3, 2]
+        self.S_COLUMN_SIZE = [3, 3, 3]
 
         # Q -> speed of reinforcement
         self.Q = [1.0, 16.0, 16.0]
@@ -33,8 +33,8 @@ class InitStruct:
         # R -> efficiency of inhibitory signals
         self.R = [4.0, 1.5, 1.5]
 
-        self.gamma = [.11, .42, .06]
-        self.delta = [.49, .87, .52]
+        self.gamma = [.10, .30, .60]
+        self.delta = [.10, .30, .60]
         #self.delta_bar = [.39, .68, .39]
         self.delta_bar = [.59, .89, .99]
 
@@ -66,7 +66,7 @@ class InitStruct:
         for i in range(self.NUM_LAYERS):
             self.D.append(self.generateMonotonic(self.delta[i], self.C_WINDOW_SIZE[i], self.PLANES_PER_LAYER[i], False))
             for w in range(self.D[i].shape[0]):
-                self.D[i][w] = self.D[i][w] * self.delta_bar[i]
+                self.D[i][w] = self.D[i][w]
 
     def distance(self, a, b):
         d = 0

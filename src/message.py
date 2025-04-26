@@ -7,6 +7,11 @@ class Message(object):
         self.size = initSize
         self.outputs = np.zeros((self.numPlanes, self.size, self.size))
 
+    def display(self):
+        for plane in range(self.numPlanes):
+            print ('PLANE: ' + str(plane+1))
+            print (self.outputs[plane])
+            
     def setPlaneOutput(self, plane, toSet):
         self.outputs[plane] = toSet
 
@@ -21,16 +26,13 @@ class Message(object):
 
     def getOneWindow(self, plane, x, y, windowSize):
         output = np.zeros(pow(windowSize, 2))
-        if windowSize % 2 == 0:
-            offset = windowSize//2
-        else:
-            offset = (windowSize-1)//2
-        #offset = windowSize//2
+        offset = (windowSize-1)//2
         count = 0
         for i in range(windowSize):
             for j in range(windowSize):
                 if x - offset + i >= 0 and y - offset + j >= 0 and x - offset + i < self.size and y - offset + j < self.size:
                     output[count] = self.outputs[plane][x - offset + i][y - offset + j]
+                count +=1
         return output
     
     def getSquareWindows(self, x, y, windowSize):
@@ -41,11 +43,7 @@ class Message(object):
 
     def getSquareWindow(self, plane, x, y, windowSize):
         output = np.zeros((windowSize, windowSize))
-        if windowSize % 2 == 0:
-            offset = windowSize//2
-        else:
-            offset = (windowSize-1)//2
-        #offset = windowSize//2
+        offset = (windowSize-1)//2
         for i in range(windowSize):
             for j in range(windowSize):
                 if x - offset + i >= 0 and y - offset + j >= 0 and x - offset + i < self.size and y - offset + j < self.size:
@@ -67,6 +65,7 @@ class Message(object):
                     if sColumn[plane][x][y] > maxVal:
                         maxL = location.Location(plane, x, y)
                         maxVal = sColumn[plane][x][y]
+
         if windowSize % 2 == 0:
             offset = windowSize//2
         else:
@@ -78,8 +77,6 @@ class Message(object):
         return maxL
     
     def getSingleOutput(self, loc):
-        if location is None:
-            return 0
         plane = loc.getPlane()
         x, y = loc.getPoint()
         return self.outputs[plane][x][y]
@@ -89,9 +86,7 @@ class Message(object):
         maxVal = 0.0
         for point in points:
             temp = point
-            if temp is None:
-                p = None
-            elif temp.getPlane() == plane:
+            if temp is not None and temp.getPlane() == plane:
                 if self.getSingleOutput(temp) > maxVal:
                     maxVal = self.getSingleOutput(temp)
                     p = temp.getPoint()
@@ -99,21 +94,15 @@ class Message(object):
 
     def getRepresentatives(self, columnSize):
         points = []
-        if columnSize % 2 == 0:
-            offset = columnSize // 2
-        else:
-            offset = (columnSize - 1) // 2
-        #offset = columnSize // 2
         for x in range(self.size):
             for y in range(self.size):
                 sColumn = self.getSquareWindows(x, y, columnSize)
                 temp = self.getLocationOfMax(sColumn, (x, y), columnSize)
                 points.append(temp)
-
         reps = []
         for plane in range(self.numPlanes):
             reps.append(self.getMaxPerPlane(plane, points))
-        #print(reps)
+        print(reps)
         return reps
 
 

@@ -38,15 +38,14 @@ class SLayer:
 
     #initialize "a" parameter values to small values [0,1]
     def initA(self, prev):
-        np.random.seed(42)
         self.a = np.zeros((self.numPlanes, prev, pow(self.windowSize, 2)))
         for k in range(self.numPlanes):
             for ck in range(prev):
                 for w in range(pow(self.windowSize, 2)):
                     dist_factor = abs((ck / prev) - (k / self.numPlanes))
                     pos_factor = np.sin(w) * np.cos(w+1)  # más variabilidad
-                    rand_factor = np.random.uniform(0, 1.2)       # aleatoriedad suave
-                    self.a[k][ck][w] = rand_factor
+                    rand_factor = np.random.uniform(0.1, 1)       # aleatoriedad suave
+                    self.a[k][ck][w] = random.random()
                     
     #initialize "b" parameter at zero
     def initB(self):
@@ -75,8 +74,9 @@ class SLayer:
     def adjustWeights(self, inputs, output, vOutput):
         weightLength = pow(self.windowSize, 2)
         representatives = output.getRepresentatives(self.columnSize)
+        count = 0
         for plane in range(self.numPlanes):
-            if representatives[plane] is not None:
+            if representatives[plane] is not None and count < 4:
                 x, y = representatives[plane]
                 #delta of "b" parameter
                 delta = self.q/2 * vOutput[x][y]
@@ -87,3 +87,4 @@ class SLayer:
                         #delta of "a" parameter
                         delta = self.q * self.c[weight] * prev[weight]
                         self.a[plane][ck][weight] += delta
+                count += 1

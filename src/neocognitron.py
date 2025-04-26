@@ -59,7 +59,8 @@ class Neocognitron(object):
 			# Convert array to NumPy array
 			array = np.array(array, dtype=np.float32)
 			# Create binary image: non-zero values are black, zero values are white
-			binary_image = np.where(array > 0.3, 0, 255).astype(np.uint8)
+			#array = abs((array*255)-255)
+			binary_image = np.where(array > 0, 0, 255).astype(np.uint8)
 			# Save the binary image (optional, commented out)
 			images.append(binary_image)
 		
