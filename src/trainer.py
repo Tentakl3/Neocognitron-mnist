@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 IMG_SIZE = 16
-FILES_PER_CLASS = 10
+FILES_PER_CLASS = 50
 TRAIN_PER_CLASS = 25
 ALPHABET = '01234'
 DATA_DIR = 'data/validate-mnist/'
